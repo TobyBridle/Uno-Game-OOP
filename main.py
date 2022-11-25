@@ -35,8 +35,9 @@ class Deck:
         for i in range(getNumOfPlayers()):
             players[i].addCard(Hand.addCard(7))
 
-    def isEmpty(self):
-        pass
+    def isEmpty(self, deck):
+        if len(deck) == 0:
+            return True
 
 
 
