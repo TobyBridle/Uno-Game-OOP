@@ -42,7 +42,7 @@ class Deck:
 
 class Hand:
     def __init__(self) -> None:
-        hand = []
+        hand = ["yellow 1"]
 
     def addCard(self, pickUpAmount, hand):
         self.hand.append(Deck.getCard(pickUpAmount))
@@ -53,6 +53,9 @@ class Hand:
             Player.Uno()
         else:
             return len(hand)
+
+    def getHand(self, hand):
+        return self.hand
         
 
 
@@ -78,30 +81,73 @@ class Player:
     def __init__(self) -> None:
         pass
 
-    def Uno(self) -> None:
+    def Uno(self):
         print("UNO!")
         saidUno = True
         return saidUno
 
+    def PlayCard(self):
+        print("You have chosen to play a card. What card would you like to play")
+        print(Hand.getHand())
+        cardToPlay = input("Please enter the card you would like to play: 1 - {}".format(Hand.getLength()))
+        if cardToPlay <= Hand.getLength():
+            card = Hand.getHand()[cardToPlay-1]
+            playedCards.setLastCard(card)
+            Hand.getHand().remove(card)
+            return card
+
+
 class playedCards:
 
     def __init__(self) -> None:
-        playedCards = []
+        PlayedCards = []
 
-    def getLastCard(self):
-        return playedCards[-1]
-        
+    def getLastCard(self, PlayedCards):
+        return PlayedCards[-1]
 
+    def setLastCard(self, card, PlayedCards):
+        PlayedCards.append(card)
+        return PlayedCards
 
-    def checkColour(self):
-        cardSplit = playedCards[-1]
-        cardSplit.split()   
-        return cardSplit[0]
+    def checkColour(self, PlayedCards):
+        card = PlayedCards[-1]
+        cardSplit = card.split(" ")
+        colour = str(cardSplit[0])  
+        return colour
 
-    def checkNumber(self):
-        cardSplit = playedCards[-1]
-        cardSplit.split()
-        return cardSplit[1]
+    def checkNumber(self, PlayedCards):
+        card = PlayedCards[-1]
+        cardSplit = card.split(" ")
+        number = int(cardSplit[1])  
+        return number
     
     def changeColour(self):
-        pass
+        colourChoice = input("""What colour would you like to change the play to?:
+        R - Red
+        B - Blue
+        Y - Yellow
+        G - Green
+        
+        - """)
+        if colourChoice in ["R", "B", "Y", "G"]:
+            if colourChoice == "R":
+                colour = "Red"
+                print("You have chosen to change the colour to Red.")
+            elif colourChoice == "B":
+                colour = "Blue"
+                print("You have chosen to change the colour to Blue.")
+            elif colourChoice == "Y":
+                colour = "Yellow"
+                print("You have chosen to change the colour to Yellow.")
+            elif colourChoice == "G":
+                colour = "Green"
+                print("You have chosen to change the colour to Green.")
+            else:
+                print("Invalid input. Please try again.")
+                self.changeColour()
+            return colour
+        else:
+            print("Invalid input. Please try again.")
+            self.changeColour()
+
+
