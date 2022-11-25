@@ -3,37 +3,36 @@ import numpy as np, time as t, random as r
 
 class Deck:
     def __init__(self) -> None:
-        pass
+        self.cards = []
 
     def buildDeck(self, deck):
         colours = ["Red", "Green", "Yellow", "Blue"]
         values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "Draw Two", "Skip", "Reverse"]
         wilds = ["Wild", "Wild Draw Four"]
-        deck = []
         for colour in colours:
             for value in values:
                 cardVal = "{} {}".format(colour, value)
-                deck.append(cardVal)
+                self.cards.append(cardVal)
                 if value != 0:
-                    deck.append(cardVal)
+                    self.cards.append(cardVal)
 
-        for i in range(4):
+        for _ in range(4):
             deck.append([wilds[0]])
             deck.append(wilds[1])
 
         np.random.shuffle(deck)
         return deck
 
-    def getCard(self, pickUpAmount, deck):
-        for i in range(pickUpAmount):
-            sendOff = deck[1:pickUpAmount]
-            deck.remove(sendOff)
+    def getCard(self, pickUpAmount, hand):
+        for _ in range(pickUpAmount):
+            sendOff = self.cards[1:pickUpAmount]
+            hand.remove(sendOff)
             return sendOff
         
 
-    def dealSeven(self, deck, numToDeal, getNumOfPlayers, players):
+    def dealSeven(self, hand, numToDeal, getNumOfPlayers, players):
         for i in range(getNumOfPlayers()):
-            players[i].addCard(Hand.addCard(7))
+            players[i].addCard(hand.addCard(7))
 
     def isEmpty(self, deck):
         return bool(len(deck) == 0) # Will return True if deck is empty
@@ -42,19 +41,14 @@ class Deck:
 
 class Hand:
     def __init__(self) -> None:
-        hand = ["yellow 1"]
+        self.hand = ["yellow 1"]
 
-    def addCard(self, pickUpAmount, hand):
-        self.hand.append(Deck.getCard(pickUpAmount))
+    def addCard(self, pickUpAmount):
+        # FIX: Make it so that it picks up the amount of cards specified
+        self.hand.append(Deck.getCard(pickUpAmount, self.hand))
 
-        
-    def getLength(self, hand):
-        if len(self.hand == 1):
-            Player.Uno()
-        else:
-            return len(hand)
 
-    def getHand(self, hand):
+    def getHand(self):
         return self.hand
         
 
@@ -62,39 +56,50 @@ class Hand:
 
 class Game:
     def __init__(self) -> None:
-        players = []
+        self.players = []
 
-    def startGame(self, players) :
+    def startGame(self) :
         print("Welcomle to Uno.")
         print("To start, you need to choose how many players will be playing.")
         numOfPlayers = int(input("How many players will be playing?  :  (2-4) "))
         if numOfPlayers in [2,3,4]:
             print("You have chosen {} players.".format(numOfPlayers))
-            players = [Player() for i in range(numOfPlayers)]
-            return players
+            self.players = [Player() for _ in range(numOfPlayers)]
+            return self.players
         else:
             print("Invalid input. Please choose between 2 and 4 players.")
-            self.startGame(players)
+            self.startGame()
         
 
 class Player:
     def __init__(self) -> None:
-        pass
+        self.hand = Hand()
 
     def Uno(self):
         print("UNO!")
         saidUno = True
         return saidUno
 
+
     def PlayCard(self):
         print("You have chosen to play a card. What card would you like to play")
-        print(Hand.getHand())
-        cardToPlay = input("Please enter the card you would like to play: 1 - {}".format(Hand.getLength()))
-        if cardToPlay <= Hand.getLength():
-            card = Hand.getHand()[cardToPlay-1]
+        print(self.hand.getHand())
+        _cardToPlay = ""
+        # Card must be an integer and within the bounds 1 - self.hand.getLength()
+        handLength = len(self.hand.getHand())
+        while _cardToPlay not in range(1, handLength):
+            _cardToPlay = input("Please enter the card you would like to play: 1 - {}".format(handLength))
+        # Try to convert to integer
+        cardToPlay = int(_cardToPlay)
+        
+        if cardToPlay <= handLength:
+            card = self.hand.getHand()[int(cardToPlay)-1]
+            # FIX: What is playedCards??
             playedCards.setLastCard(card)
-            Hand.getHand().remove(card)
+            self.hand.getHand().remove(card)
             return card
+        if handLength == 1:
+            self.Uno()
 
 
 class playedCards:
@@ -129,6 +134,7 @@ class playedCards:
         G - Green
         
         - """)
+        colour = ""
         if colourChoice in ["R", "B", "Y", "G"]:
             if colourChoice == "R":
                 colour = "Red"
@@ -155,6 +161,6 @@ while True:
     deck = Deck()
     deck.buildDeck(deck)
     game = Game()
-    game.startGame(players)
-    print(players)
+    game.startGame()
+    print()
 
