@@ -36,8 +36,7 @@ class Deck:
             players[i].addCard(Hand.addCard(7))
 
     def isEmpty(self, deck):
-        if len(deck) == 0:
-            return True
+        return bool(len(deck) == 0) # Will return True if deck is empty
 
 
 
@@ -63,13 +62,13 @@ class Hand:
 
 class Game:
     def __init__(self) -> None:
-        pass
+        players = []
 
     def startGame(self, players) :
-        print("Welcome to Uno.")
+        print("Welcomle to Uno.")
         print("To start, you need to choose how many players will be playing.")
         numOfPlayers = int(input("How many players will be playing?  :  (2-4) "))
-        if numOfPlayers == [2,3,4]:
+        if numOfPlayers in [2,3,4]:
             print("You have chosen {} players.".format(numOfPlayers))
             players = [Player() for i in range(numOfPlayers)]
             return players
@@ -151,4 +150,11 @@ class playedCards:
             print("Invalid input. Please try again.")
             self.changeColour()
 
+
+while True:
+    deck = Deck()
+    deck.buildDeck(deck)
+    game = Game()
+    game.startGame(players)
+    print(players)
 
